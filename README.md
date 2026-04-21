@@ -92,7 +92,7 @@ Prerequisites: Ensure you have [Docker](https://www.docker.com/) and [Docker Com
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/yourusername/movie-streamer-microservices.git
+git clone https://github.com/PasiAbey/Cinema---Movie-Streaming-Platform.git
 cd movie-streamer-microservices
 ```
 
