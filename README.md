@@ -109,16 +109,12 @@ PORT=5001
 Place your `serviceAccountKey.json` file inside the `services/user-service/` directory.
 
 **4. Spin up the cluster**
-Use Docker Compose to build the images and launch the isolated network.
+Use Docker Compose to build the images and launch the isolated network. This single command will start the Gateway, Catalog Service, User Service, and the Frontend.
 ```bash
 docker-compose up --build -d
 ```
 
-**5. Start the Frontend (Development)**
-In a separate terminal, start the Vite development server:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-*The API Gateway is now listening on `http://localhost:8080` and routing traffic seamlessly!*
+**5. Access the Application**
+Once the containers are running, you can access the platform at:
+*   **Frontend**: `http://localhost:5173`
+*   **API Gateway**: `http://localhost:8080`
