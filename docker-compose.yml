@@ -1,0 +1,32 @@
+services:
+  gateway:
+    build: ./services/gateway
+    ports:
+      - "8080:80"
+    depends_on:
+      - catalog-service
+      - user-service
+    networks:
+      - movie-network
+
+  catalog-service:
+    build: ./services/catalog-service
+    env_file: .env
+    networks:
+      - movie-network
+
+  user-service:
+    build: ./services/user-service
+    env_file: .env
+    # To support Firebase Admin, you should provide a service account key
+    # You can mount it like this once you have the file:
+    volumes:
+      - ./services/user-service/serviceAccountKey.json:/app/serviceAccountKey.json
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/serviceAccountKey.json
+    networks:
+      - movie-network
+
+networks:
+  movie-network:
+    driver: bridge
