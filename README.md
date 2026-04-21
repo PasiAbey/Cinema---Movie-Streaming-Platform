@@ -12,7 +12,7 @@ It implements the **API Gateway pattern**, robust inter-container networking, st
 
 ---
 
-## 🎯 Key DevOps & Engineering Achievements
+##  Key DevOps & Engineering Achievements
 
 *   **Microservices Decoupling**: Separated the monolithic React+Firebase application into distinct functional domains (Catalog vs. User Data). Removed direct database write access from the client, migrating all state mutations to a secure Node.js backend.
 *   **Container Orchestration**: Utilized `docker-compose` to manage a multi-container environment with isolated bridged networks, environment variable injection, and optimized memory constraints to prevent OOM errors.
@@ -21,7 +21,7 @@ It implements the **API Gateway pattern**, robust inter-container networking, st
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 The application is composed of four primary containers connected via an internal Docker bridge network (`movie-network`).
 
@@ -66,7 +66,7 @@ The application is composed of four primary containers connected via an internal
 
 ---
 
-## 🔐 Security Model
+##  Security Model
 
 *   **JWT Verification**: When a user logs in via Firebase Auth on the frontend, an ID token is generated. This token is passed in the `Authorization: Bearer <token>` header to the Gateway. The User Service validates this token cryptography using `admin.auth().verifyIdToken()` before processing any requests.
 *   **Credential Isolation**: The `serviceAccountKey.json` is securely mounted directly into the `user-service` container, completely isolating database write credentials from the public internet and frontend codebase.
@@ -74,7 +74,7 @@ The application is composed of four primary containers connected via an internal
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 *   **Orchestration & Containers**: Docker, Docker Compose
 *   **API Gateway**: Nginx
@@ -86,7 +86,7 @@ The application is composed of four primary containers connected via an internal
 
 ---
 
-## 🚀 Running the Cluster Locally
+##  Running the Cluster Locally
 
 Prerequisites: Ensure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed on your machine.
 
