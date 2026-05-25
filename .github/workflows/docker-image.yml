@@ -23,16 +23,16 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
     
       - name: Build the catalog-service image
-        run: docker build ./services/catalog-service --file Dockerfile --tag pasiabey/movie-streamer-catalog-services:latest
+        run: docker build ./services/catalog-service/Dockerfile --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-catalog-services:latest
 
       - name: Build the gateway image
-        run: docker build ./services/gateway --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-gateway:latest
+        run: docker build ./services/gateway/Dockerfile  --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-gateway:latest
 
       - name: Build the user-service image
-        run: docker build ./services/user-service --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-user-service:latest
+        run: docker build ./services/user-service/Dockerfile  --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-user-service:latest
 
       - name: Build the frontend image
-        run: docker build ./frontend --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-frontend:latest
+        run: docker build ./frontend/Dockerfile --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-frontend:latest
 
       - name: Push the catalog-service image into Registry
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-catalog-services:latest
