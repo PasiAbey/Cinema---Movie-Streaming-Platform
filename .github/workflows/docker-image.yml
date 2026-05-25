@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
     
       - name: Build the catalog-service image
-        run: docker build ./services/catalog-service/Dockerfile --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-catalog-services:latest
+        run: docker build /services/catalog-service --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-catalog-services:latest
 
       - name: Build the gateway image
         run: docker build ./services/gateway/Dockerfile  --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/movie-streamer-gateway:latest
