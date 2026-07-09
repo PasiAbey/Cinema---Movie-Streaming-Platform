@@ -17,6 +17,18 @@ serviceAccountKey.json
 .docker/
 docker-compose.override.yml
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+
 # IDE / Editor
 .vscode/
 .idea/

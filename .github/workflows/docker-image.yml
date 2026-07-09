@@ -1,10 +1,11 @@
-name: Docker Image CI
+name: Cinema CI/CD pipeline
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths-ignore:
+      - README.md
+      - infrastructure/**
 
 jobs:
 
@@ -15,6 +16,32 @@ jobs:
     steps:
       - name: Check the Repository
         uses: actions/checkout@v4
+
+      - name: Log in to the AWS ECR registry
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Add Version Tag
+        run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+
+      - name: Build the Frontend Docker Image
+        run: |
+          docker build -t ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG ./frontend
+          docker push ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       - name: Log in to the DockerHub registry
         uses: docker/login-action@v3
