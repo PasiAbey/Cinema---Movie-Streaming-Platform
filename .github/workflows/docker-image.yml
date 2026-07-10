@@ -49,3 +49,8 @@ jobs:
         run: |
           docker build -t ${{ secrets.USER_SERVICE_REPO }}:$IMAGE_TAG ./services/user-service
           docker push ${{ secrets.USER_SERVICE_REPO }}:$IMAGE_TAG
+
+      - name: Run test container
+        run: |
+          docker build -t ${{ secrets.TEST_REPO }}:$IMAGE_TAG nginx.latest
+          docker push ${{ secrets.TEST_REPO }}:$IMAGE_TAG

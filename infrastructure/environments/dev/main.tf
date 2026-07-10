@@ -34,29 +34,36 @@ module "vpc" {
 
 # Create an ECR repository
 module "ecr-for-frontend" {
-  source              = "../../modules/ecr"
-  repository_name     = "cinema_frontend"
+  source               = "../../modules/ecr"
+  repository_name      = "cinema_frontend"
   image_tag_mutability = "MUTABLE"
-  scan_on_push        = true
+  scan_on_push         = true
 }
 
 module "ecr-for-gateway" {
-  source              = "../../modules/ecr"
-  repository_name     = "cinema_gateway"
+  source               = "../../modules/ecr"
+  repository_name      = "cinema_gateway"
   image_tag_mutability = "MUTABLE"
-  scan_on_push        = true
+  scan_on_push         = true
 }
 
 module "ecr-for-catalog-service" {
-  source              = "../../modules/ecr"
-  repository_name     = "cinema_catalog_service"
+  source               = "../../modules/ecr"
+  repository_name      = "cinema_catalog_service"
   image_tag_mutability = "MUTABLE"
-  scan_on_push        = true
+  scan_on_push         = true
 }
 
 module "ecr-for-user-service" {
-  source              = "../../modules/ecr"
-  repository_name     = "cinema_user_service"
+  source               = "../../modules/ecr"
+  repository_name      = "cinema_user_service"
   image_tag_mutability = "MUTABLE"
-  scan_on_push        = true
+  scan_on_push         = true
+}
+
+module "ecr-for-testing-puprose" {
+  source               = "../../modules/ecr"
+  repository_name      = "test-repo"
+  image_tag_mutability = "MUTABLE"
+  scan_on_push         = true
 }
