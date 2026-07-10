@@ -35,6 +35,11 @@ jobs:
           docker build -t ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG ./frontend
           docker push ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG
 
+
+
+
+
+
       - name: Download current task definition
         run: |
           aws ecs describe-task-definition \
@@ -71,3 +76,17 @@ jobs:
 
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
           echo "Registered new task definition: $TASK_DEF_ARN"
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster Cinema-Cluster \
+            --service Cinema-frontend-service \
+            --task-definition $TASK_DEF_ARN \
+            --force-new-deployment
+
+      - name: Wait for service stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster Cinema-Cluster \
+            --services Cinema-frontend-service
