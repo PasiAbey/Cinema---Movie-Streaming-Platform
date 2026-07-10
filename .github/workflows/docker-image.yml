@@ -35,28 +35,6 @@ jobs:
           docker build -t ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG ./frontend
           docker push ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG
 
-      - name: Build the catalog Docker Image and push it into ECR
-        run: |
-          docker build -t ${{ secrets.CATALOG_SERVICE_REPO }}:$IMAGE_TAG ./services/catalog-service
-          docker push ${{ secrets.CATALOG_SERVICE_REPO }}:$IMAGE_TAG
-
-      - name: Build the gateway Docker Image and push it into ECR
-        run: |
-          docker build -t ${{ secrets.GATEWAY_REPO }}:$IMAGE_TAG ./services/gateway
-          docker push ${{ secrets.GATEWAY_REPO }}:$IMAGE_TAG
-
-      - name: Build the user service Docker Image and push it into ECR
-        run: |
-          docker build -t ${{ secrets.USER_SERVICE_REPO }}:$IMAGE_TAG ./services/user-service
-          docker push ${{ secrets.USER_SERVICE_REPO }}:$IMAGE_TAG
-
-      - name: Run test container
-        run: |
-          docker pull nginx:latest
-          docker tag nginx:latest ${{ secrets.TEST_REPO }}:$IMAGE_TAG
-          docker push ${{ secrets.TEST_REPO }}:$IMAGE_TAG
-
-
       - name: Download current task definition
         run: |
           aws ecs describe-task-definition \
