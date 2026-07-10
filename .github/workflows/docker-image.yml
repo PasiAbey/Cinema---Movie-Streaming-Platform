@@ -55,3 +55,41 @@ jobs:
           docker pull nginx:latest
           docker tag nginx:latest ${{ secrets.TEST_REPO }}:$IMAGE_TAG
           docker push ${{ secrets.TEST_REPO }}:$IMAGE_TAG
+
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition Cinema-frontend \
+            --query taskDefinition > frontend-task-def.json
+
+      - name: Clean the Task Definition JSON files
+        run: |
+          jq '
+            del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy
+            )
+          ' frontend-task-def.json > clean-frontend-task-def.json
+
+      
+      - name: Render new task definition (inject new image)
+        run: |
+          jq --arg IMAGE "${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG" \
+          '.containerDefinitions[0].image = $IMAGE' clean-frontend-task-def.json > new-frontend-task-def.json
+
+
+      - name: Register new task definition revision
+        run: |
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-frontend-task-def.json \
+            --query "taskDefinition.taskDefinitionArn" \
+            --output text)
+
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+          echo "Registered new task definition: $TASK_DEF_ARN"

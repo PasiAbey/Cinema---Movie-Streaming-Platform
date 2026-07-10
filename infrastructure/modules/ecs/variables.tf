@@ -1,7 +1,4 @@
-variable "ecs-cluster-name" {
-  description = "The name of the ECS cluster"
-  type        = string  
-}
+# Task Definition Variables
 
 variable "ecs-task-family-name" {
   description = "The family name for the ECS task definition"
@@ -20,5 +17,43 @@ variable "memory-size" {
   default = "512"
 }
 
+variable "container-port" {
+  description = "The port on which the container will listen"
+  type        = number
+  default     = 80
+}
 
 
+
+# Service Variables
+
+variable "ecs-service-name" {
+  description = "The name of the ECS service"
+  type        = string
+}
+
+variable "ecs-cluster-id" {
+  description = "The ID of the ECS cluster"
+  type        = string
+}
+
+variable "desired-count" {
+  description = "The desired number of tasks for the ECS service"
+  type        = number
+  default     = 1
+}
+
+variable "public-subnet-01-id" {
+  description = "The ID of the first public subnet"
+  type        = string
+}
+
+variable "public-subnet-02-id" {
+  description = "The ID of the second public subnet"
+  type        = string
+}
+
+variable "security-group-id" {
+  description = "The ID of the security group for the ECS service"
+  type        = string
+}
