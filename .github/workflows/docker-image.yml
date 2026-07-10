@@ -52,5 +52,6 @@ jobs:
 
       - name: Run test container
         run: |
-          docker pull -t ${{ secrets.TEST_REPO }}:$IMAGE_TAG nginx:latest
+          docker pull nginx:latest
+          docker tag nginx:latest ${{ secrets.TEST_REPO }}:$IMAGE_TAG
           docker push ${{ secrets.TEST_REPO }}:$IMAGE_TAG
