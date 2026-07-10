@@ -32,13 +32,11 @@ jobs:
 
       - name: Build the Frontend Docker Image and Push it into ECR
         run: |
-          docker build -t ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG ./frontend
+          docker pull nginx:latest
+          docker tag nginx:latest ${{ secrets.FRONT_END_REPO}}:latest
           docker push ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG
 
-
-
-
-
+# docker build -t ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG 
 
       - name: Download current task definition
         run: |
