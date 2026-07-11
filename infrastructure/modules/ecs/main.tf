@@ -19,6 +19,8 @@ resource "aws_ecs_task_definition" "task-definition" {
           hostPort      = var.container-port
         }
       ]
+
+      environment = var.container-environment-variables
     }
   ])
   
@@ -38,6 +40,12 @@ resource "aws_ecs_service" "ecs-service" {
     subnets          = [var.public-subnet-01-id, var.public-subnet-02-id]
     security_groups  = [var.security-group-id]
     assign_public_ip = true
+  }
+  
+  load_balancer {
+    target_group_arn = var.alb_tar_grp_arn
+    container_name   = "${var.ecs-task-family-name}-container"
+    container_port   = var.container-port
   }
 
   lifecycle {

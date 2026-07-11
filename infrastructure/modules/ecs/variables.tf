@@ -23,6 +23,18 @@ variable "container-port" {
   default     = 80
 }
 
+variable "container-environment-variables" {
+  description = "A list of environment variables for the container"
+  type        = list(object({
+    name  = string
+    value = string
+  }))
+  default     = []
+}
+
+
+
+
 
 
 # Service Variables
@@ -55,5 +67,10 @@ variable "public-subnet-02-id" {
 
 variable "security-group-id" {
   description = "The ID of the security group for the ECS service"
+  type        = string
+}
+
+variable "alb_tar_grp_arn" {
+  description = "The ARN of the ALB target group"
   type        = string
 }

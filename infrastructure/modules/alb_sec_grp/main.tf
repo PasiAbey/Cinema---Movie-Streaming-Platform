@@ -4,10 +4,10 @@ resource "aws_security_group" "this" {
   vpc_id      = var.vpc-id
 
   ingress {
-    from_port   = var.container-port
-    to_port     = var.container-port
+    from_port   = var.alb-port
+    to_port     = var.alb-port
     protocol    = "tcp"
-    security_groups = [var.security-group-id]
+    cidr_blocks = ["0.0.0.0/0"]
 
   }
   egress {
