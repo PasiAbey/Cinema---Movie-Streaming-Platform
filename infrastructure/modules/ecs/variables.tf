@@ -73,4 +73,5 @@ variable "security-group-id" {
 variable "alb_tar_grp_arn" {
   description = "The ARN of the ALB target group"
   type        = string
+  default     = null
 }

@@ -30,6 +30,12 @@ jobs:
       - name: Add Version Tag
         run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
 
+
+      - name: Build the Gateway Docker Image and Push it into ECR
+        run: |
+          docker build -t ${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG ./gateway
+          docker push ${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG
+
       - name: Build the Frontend Docker Image and Push it into ECR
         run: |
           docker build -t ${{ secrets.FRONT_END_REPO}}:$IMAGE_TAG ./frontend
@@ -75,7 +81,7 @@ jobs:
             --output text)
 
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
-          echo "Registered new task definition: $TASK_DEF_ARN"
+          echo "Registered new Frontend task definition: $TASK_DEF_ARN"
 
       - name: Update ECS service
         run: |
@@ -85,8 +91,67 @@ jobs:
             --task-definition $TASK_DEF_ARN \
             --force-new-deployment
 
+
+      
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition Cinema-gateway \
+            --query taskDefinition > gateway-task-def.json
+
+      - name: Clean the Task Definition JSON files
+        run: |
+          jq '
+            del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy
+            )
+          ' gateway-task-def.json > clean-gateway-task-def.json
+
+      
+      - name: Render new task definition (inject new image)
+        run: |
+          jq --arg IMAGE "${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG" \
+          '.containerDefinitions[0].image = $IMAGE' clean-gateway-task-def.json > new-gateway-task-def.json
+
+
+      - name: Register new task definition revision
+        run: |
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-gateway-task-def.json \
+            --query "taskDefinition.taskDefinitionArn" \
+            --output text)
+
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+          echo "Registered new Gateway task definition: $TASK_DEF_ARN"
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster Cinema-Cluster \
+            --service Cinema-gateway-service \
+            --task-definition $TASK_DEF_ARN \
+            --force-new-deployment
+
+
+
+
+
+
+
+
+
+
       - name: Wait for service stability
         run: |
           aws ecs wait services-stable \
             --cluster Cinema-Cluster \
-            --services Cinema-frontend-service
+            --services \
+              Cinema-frontend-service \
+              Cinema-gateway-service

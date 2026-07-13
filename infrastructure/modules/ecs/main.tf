@@ -42,10 +42,14 @@ resource "aws_ecs_service" "ecs-service" {
     assign_public_ip = true
   }
   
-  load_balancer {
-    target_group_arn = var.alb_tar_grp_arn
-    container_name   = "${var.ecs-task-family-name}-container"
-    container_port   = var.container-port
+
+  dynamic "load_balancer" {
+    for_each = var.alb_tar_grp_arn != null ? [1] : []
+    content {
+      target_group_arn = var.alb_tar_grp_arn
+      container_name   = "${var.ecs-task-family-name}-container"
+      container_port   = var.container-port
+    }
   }
 
   lifecycle {

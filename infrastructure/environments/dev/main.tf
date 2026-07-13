@@ -34,6 +34,13 @@ module "vpc" {
 
 
 
+# Create a DNS namespace
+module "dns-namespace" {
+  source = "../../modules/dns_namespace"
+  namespace-name = "cinema.local"
+  vpc-id = module.vpc.vpc-id
+}
+
 
 
 # Create an ECR repository
@@ -82,6 +89,15 @@ module "ecs-cluster" {
 
 
 
+
+
+
+
+
+
+
+
+
 # Create a security group for the ALB
 module "alb-sg" {
   source = "../../modules/alb_sec_grp"
@@ -101,7 +117,6 @@ module "sg-for-frontend" {
 }
 
 
-
 # Create a security group for gateway
 module "sg-for-gateway" {
   source = "../../modules/sec_grp"
@@ -110,6 +125,107 @@ module "sg-for-gateway" {
   security-group-id = module.sg-for-frontend.security-group-id
   container-port = 80
 }
+
+# Create a security group for catalog service
+module "sg-for-catalog" {
+  source = "../../modules/sec_grp"
+  sg-name = "Cinema-catalog-sg"
+  vpc-id = module.vpc.vpc-id
+  security-group-id = module.sg-for-gateway.security-group-id
+  container-port = 5001
+}
+
+module "sg-for-user-service" {
+  source = "../../modules/sec_grp"
+  sg-name = "Cinema-user-service-sg"
+  vpc-id = module.vpc.vpc-id
+  security-group-id = module.sg-for-gateway.security-group-id
+  container-port = 5002
+}
+
+
+
+
+
+
+
+
+
+# Create an ECS Task Definition and Service for Gateway
+module "gateway-service" {
+  source = "../../modules/ecs"
+  ecs-task-family-name = "Cinema-gateway"
+  cpu-size = "256"
+  memory-size = "512"
+  container-port = 80
+
+  ecs-service-name = "Cinema-gateway-service"
+  ecs-cluster-id = module.ecs-cluster.cluster-id
+  desired-count = 1
+  public-subnet-01-id = module.vpc.public-subnet-01-id
+  public-subnet-02-id = module.vpc.public-subnet-02-id
+  security-group-id = module.sg-for-gateway.security-group-id
+}
+
+
+
+
+# Create a namespace service discovery for catalog service
+module "catalog-discovery" {
+  source = "../../modules/nam_space_serv_discovery"
+  service-disc-name = "catalog-service"
+  namespace-id = module.dns-namespace.namespace_id
+}
+
+
+# Create an ECS Task Definition and Service for Catalog Service
+module "catalog-service" {
+  source = "../../modules/ecs"
+  ecs-task-family-name = "Cinema-catalog"
+  cpu-size = "256"
+  memory-size = "512"
+  container-port = 5001
+
+  ecs-service-name = "Cinema-catalog-service"
+  ecs-cluster-id = module.ecs-cluster.cluster-id
+  desired-count = 1
+  public-subnet-01-id = module.vpc.public-subnet-01-id
+  public-subnet-02-id = module.vpc.public-subnet-02-id
+  security-group-id = module.sg-for-catalog.security-group-id
+}
+
+
+
+
+# Create a namespace service discovery for user service
+module "user-service-discovery" {
+  source = "../../modules/nam_space_serv_discovery"
+  service-disc-name = "user-service"
+  namespace-id = module.dns-namespace.namespace_id
+}
+
+
+# Create an ECS Task Definition and Service for User Service
+module "user-service" {
+  source = "../../modules/ecs"
+  ecs-task-family-name = "Cinema-user-service"
+  cpu-size = "256"
+  memory-size = "512"
+  container-port = 5002
+
+  ecs-service-name = "Cinema-user-service"
+  ecs-cluster-id = module.ecs-cluster.cluster-id
+  desired-count = 1
+  public-subnet-01-id = module.vpc.public-subnet-01-id
+  public-subnet-02-id = module.vpc.public-subnet-02-id
+  security-group-id = module.sg-for-user-service.security-group-id
+}
+
+
+
+
+
+
 
 
 
@@ -139,6 +255,9 @@ module "frontend-service" {
   security-group-id = module.sg-for-frontend.security-group-id
   alb_tar_grp_arn = module.alb-target-group.alb-targ-grp-arn
 }
+
+
+
 
 
 
