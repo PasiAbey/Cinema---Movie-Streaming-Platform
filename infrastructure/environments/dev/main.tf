@@ -158,6 +158,7 @@ module "gateway-service" {
   cpu-size = "256"
   memory-size = "512"
   container-port = 80
+  aws-region = "eu-north-1"
 
   ecs-service-name = "Cinema-gateway-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id
@@ -185,6 +186,7 @@ module "catalog-service" {
   cpu-size = "256"
   memory-size = "512"
   container-port = 5001
+  aws-region = "eu-north-1"
 
   ecs-service-name = "Cinema-catalog-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id
@@ -212,6 +214,7 @@ module "user-service" {
   cpu-size = "256"
   memory-size = "512"
   container-port = 5002
+  aws-region = "eu-north-1"
 
   ecs-service-name = "Cinema-user-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id
@@ -246,6 +249,7 @@ module "frontend-service" {
       value = "http://cinema-gateway:8080"
     }
   ]
+  aws-region = "us-east-1"
 
   ecs-service-name = "Cinema-frontend-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id

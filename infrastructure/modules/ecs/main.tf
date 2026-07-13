@@ -1,3 +1,10 @@
+# Create a CloudWatch Log Group for ECS logs
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name              = "/ecs/${var.ecs-task-family-name}"
+  retention_in_days = 7
+}
+
+
 # Create a Task Definition
 resource "aws_ecs_task_definition" "task-definition" {
   family                   = var.ecs-task-family-name
@@ -21,6 +28,16 @@ resource "aws_ecs_task_definition" "task-definition" {
       ]
 
       environment = var.container-environment-variables
+
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.ecs_logs.name
+          awslogs-region        = var.aws-region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
   
