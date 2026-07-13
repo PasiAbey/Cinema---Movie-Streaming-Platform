@@ -73,4 +73,10 @@ resource "aws_ecs_service" "ecs-service" {
     ignore_changes = [task_definition]
   }
   
+  dynamic "service_registries" {
+    for_each = var.service-discovery-arn != null ? [1] : []
+    content {
+      registry_arn = var.service-discovery-arn
+    }
+  }
 }

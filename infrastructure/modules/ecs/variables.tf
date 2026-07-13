@@ -80,3 +80,9 @@ variable "alb_tar_grp_arn" {
   type        = string
   default     = null
 }
+
+variable "service-discovery-arn" {
+  description = "The ARN of the service discovery service"
+  type        = string
+  default     = null
+}

@@ -56,7 +56,7 @@ jobs:
 
 
 
-# --------------      Catalog Section        --------------
+# --------------      Catalog Section       --------------
 
       - name: Download current task definition
         run: |

@@ -194,6 +194,7 @@ module "catalog-service" {
   public-subnet-01-id = module.vpc.public-subnet-01-id
   public-subnet-02-id = module.vpc.public-subnet-02-id
   security-group-id = module.sg-for-catalog.security-group-id
+  service-discovery-arn = module.catalog-discovery.arn
 }
 
 
@@ -222,6 +223,7 @@ module "user-service" {
   public-subnet-01-id = module.vpc.public-subnet-01-id
   public-subnet-02-id = module.vpc.public-subnet-02-id
   security-group-id = module.sg-for-user-service.security-group-id
+  service-discovery-arn = module.user-service-discovery.arn
 }
 
 
