@@ -33,7 +33,7 @@ jobs:
 
       - name: Build the Gateway Docker Image and Push it into ECR
         run: |
-          docker build -t ${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG ./gateway
+          docker build -t ${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG ./services/gateway
           docker push ${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG
 
       - name: Build the Frontend Docker Image and Push it into ECR
