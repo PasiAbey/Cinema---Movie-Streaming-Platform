@@ -216,7 +216,7 @@ jobs:
 
 
 
-# --------------      Frontend Section        --------------
+# --------------      Frontend Section         --------------
 
       - name: Download current task definition
         run: |
