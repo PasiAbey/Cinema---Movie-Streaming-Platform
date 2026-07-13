@@ -30,6 +30,16 @@ jobs:
       - name: Add Version Tag
         run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
 
+      - name: Build the Catalog Docker Image and Push it into ECR
+        run: |
+          docker build -t ${{ secrets.CATALOG_SERVICE_REPO}}:$IMAGE_TAG ./services/catalog-service
+          docker push ${{ secrets.CATALOG_SERVICE_REPO}}:$IMAGE_TAG
+
+      - name: Build the User service Docker Image and Push it into ECR
+        run: |
+          docker build -t ${{ secrets.USER_SERVICE_REPO}}:$IMAGE_TAG ./services/user-service
+          docker push ${{ secrets.USER_SERVICE_REPO}}:$IMAGE_TAG
+
 
       - name: Build the Gateway Docker Image and Push it into ECR
         run: |
@@ -45,6 +55,159 @@ jobs:
 
 
 
+
+# --------------      Catalog Section        --------------
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition Cinema-catalog \
+            --query taskDefinition > catalog-task-def.json
+
+      - name: Clean the Task Definition JSON files
+        run: |
+          jq '
+            del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy
+            )
+          ' catalog-task-def.json > clean-catalog-task-def.json
+
+      
+      - name: Render new task definition (inject new image)
+        run: |
+          jq --arg IMAGE "${{ secrets.CATALOG_SERVICE_REPO}}:$IMAGE_TAG" \
+          '.containerDefinitions[0].image = $IMAGE' clean-catalog-task-def.json > new-catalog-task-def.json
+
+
+      - name: Register new task definition revision
+        run: |
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-catalog-task-def.json \
+            --query "taskDefinition.taskDefinitionArn" \
+            --output text)
+
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+          echo "Registered new Catalog task definition: $TASK_DEF_ARN"
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster Cinema-Cluster \
+            --service Cinema-catalog-service \
+            --task-definition $TASK_DEF_ARN \
+            --force-new-deployment          
+
+
+
+
+
+
+# --------------      User-Service Section        --------------
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition Cinema-user-service \
+            --query taskDefinition > user-service-task-def.json
+
+      - name: Clean the Task Definition JSON files
+        run: |
+          jq '
+            del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy
+            )
+          ' user-service-task-def.json > clean-user-service-task-def.json
+
+      
+      - name: Render new task definition (inject new image)
+        run: |
+          jq --arg IMAGE "${{ secrets.USER_SERVICE_REPO}}:$IMAGE_TAG" \
+          '.containerDefinitions[0].image = $IMAGE' clean-user-service-task-def.json > new-user-service-task-def.json
+
+
+      - name: Register new task definition revision
+        run: |
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-user-service-task-def.json \
+            --query "taskDefinition.taskDefinitionArn" \
+            --output text)
+
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+          echo "Registered new User Service task definition: $TASK_DEF_ARN"
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster Cinema-Cluster \
+            --service Cinema-user-service \
+            --task-definition $TASK_DEF_ARN \
+            --force-new-deployment 
+
+
+
+
+
+
+# --------------      Gateway Section        --------------
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition Cinema-gateway \
+            --query taskDefinition > gateway-task-def.json
+
+      - name: Clean the Task Definition JSON files
+        run: |
+          jq '
+            del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy
+            )
+          ' gateway-task-def.json > clean-gateway-task-def.json
+
+      
+      - name: Render new task definition (inject new image)
+        run: |
+          jq --arg IMAGE "${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG" \
+          '.containerDefinitions[0].image = $IMAGE' clean-gateway-task-def.json > new-gateway-task-def.json
+
+
+      - name: Register new task definition revision
+        run: |
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-gateway-task-def.json \
+            --query "taskDefinition.taskDefinitionArn" \
+            --output text)
+
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+          echo "Registered new Gateway task definition: $TASK_DEF_ARN"
+
+
+
+
+
+
+
+
+
+# --------------      Frontend Section        --------------
 
       - name: Download current task definition
         run: |
@@ -94,43 +257,18 @@ jobs:
 
       
 
-      - name: Download current task definition
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition Cinema-gateway \
-            --query taskDefinition > gateway-task-def.json
-
-      - name: Clean the Task Definition JSON files
-        run: |
-          jq '
-            del(
-              .taskDefinitionArn,
-              .revision,
-              .status,
-              .requiresAttributes,
-              .compatibilities,
-              .registeredAt,
-              .registeredBy
-            )
-          ' gateway-task-def.json > clean-gateway-task-def.json
-
       
-      - name: Render new task definition (inject new image)
-        run: |
-          jq --arg IMAGE "${{ secrets.GATEWAY_REPO}}:$IMAGE_TAG" \
-          '.containerDefinitions[0].image = $IMAGE' clean-gateway-task-def.json > new-gateway-task-def.json
-
-
-      - name: Register new task definition revision
-        run: |
-          TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://new-gateway-task-def.json \
-            --query "taskDefinition.taskDefinitionArn" \
-            --output text)
-
-          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
-          echo "Registered new Gateway task definition: $TASK_DEF_ARN"
-
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       - name: Update ECS service
         run: |
           aws ecs update-service \
@@ -153,5 +291,7 @@ jobs:
           aws ecs wait services-stable \
             --cluster Cinema-Cluster \
             --services \
+              Cinema-catalog-service \
+              Cinema-user-service \
               Cinema-frontend-service \
               Cinema-gateway-service
