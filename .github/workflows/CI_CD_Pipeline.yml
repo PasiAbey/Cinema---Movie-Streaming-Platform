@@ -200,6 +200,15 @@ jobs:
           echo "Registered new Gateway task definition: $TASK_DEF_ARN"
 
 
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster Cinema-Cluster \
+            --service Cinema-gateway-service \
+            --task-definition $TASK_DEF_ARN \
+            --force-new-deployment
+
+
 
 
 
@@ -269,13 +278,7 @@ jobs:
       
       
       
-      - name: Update ECS service
-        run: |
-          aws ecs update-service \
-            --cluster Cinema-Cluster \
-            --service Cinema-gateway-service \
-            --task-definition $TASK_DEF_ARN \
-            --force-new-deployment
+
 
 
 
