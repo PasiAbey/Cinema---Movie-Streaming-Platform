@@ -28,6 +28,7 @@ resource "aws_ecs_task_definition" "task-definition" {
       ]
 
       environment = var.container-environment-variables
+      secrets = var.container-secrets
 
 
       logConfiguration = {

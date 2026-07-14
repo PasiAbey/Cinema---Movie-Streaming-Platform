@@ -32,6 +32,15 @@ variable "container-environment-variables" {
   default     = []
 }
 
+variable "container-secrets" {
+  description = "A list of secrets for the container"
+  type        = list(object({
+    name      = string
+    valueFrom = string
+  }))
+  default     = []
+}
+
 variable "aws-region" {
   description = "The AWS region where the resources will be created"
   type        = string

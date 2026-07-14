@@ -166,6 +166,7 @@ module "gateway-service" {
   public-subnet-01-id = module.vpc.public-subnet-01-id
   public-subnet-02-id = module.vpc.public-subnet-02-id
   security-group-id = module.sg-for-gateway.security-group-id
+  alb_tar_grp_arn = module.alb-target-group-for-gateway.alb-targ-grp-arn
 }
 
 
@@ -251,6 +252,33 @@ module "frontend-service" {
       value = "http://cinema-gateway:8080"
     }
   ]
+
+  container-secrets = [
+    {
+      name      = "VITE_FIREBASE_API_KEY"
+      valueFrom = module.Firebase-API-Key.secret-arn
+    },
+    {
+      name      = "VITE_FIREBASE_AUTH_DOMAIN"
+      valueFrom = module.Firebase-Auth-Domain.secret-arn
+    },
+    {
+      name      = "VITE_FIREBASE_PROJECT_ID"
+      valueFrom = module.Firebase-Project-Id.secret-arn
+    },
+    {
+      name      = "VITE_FIREBASE_STORAGE_BUCKET"
+      valueFrom = module.Firebase-Storage-Bucket.secret-arn
+    },
+    {
+      name      = "VITE_FIREBASE_MESSAGING_SENDER_ID"
+      valueFrom = module.Firebase-Messaging-Sender-Id.secret-arn
+    },
+    {
+      name      = "VITE_FIREBASE_APP_ID"
+      valueFrom = module.Firebase-app-id.secret-arn
+    }
+  ]
   aws-region = "us-east-1"
 
   ecs-service-name = "Cinema-frontend-service"
@@ -277,7 +305,6 @@ module "alb" {
 }
 
 
-
 # Create an ALB Target Group
 module "alb-target-group" {
   source = "../../modules/alb_target_grp"
@@ -295,4 +322,68 @@ module "alb-listener" {
   alb-port = 80
   alb-protocol = "HTTP"
   target-group-arn = module.alb-target-group.alb-targ-grp-arn
+}
+
+
+
+
+# Create an ALB Target Group for Gateway Service
+module "alb-target-group-for-gateway" {
+  source = "../../modules/alb_target_grp"
+  alb-target-group-name = "Cinema-gateway-alb-target-group"
+  alb-target-group-port = 80
+  alb-target-group-protocol = "HTTP"
+  vpc-id = module.vpc.vpc-id  
+}
+
+
+# Create an ALB Listener Rule for Gateway Service
+module "alb-listner-rule" {
+  source = "../../modules/alb_listner_rule"
+  alb_listener-arn = module.alb-listener.alb-listener-arn
+  priority = 100
+  target-group-arn = module.alb-target-group-for-gateway.alb-targ-grp-arn
+  path-pattern = ["/api/*"]
+}
+
+
+
+
+
+
+
+module "Firebase-API-Key" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_FIREBASE_API_KEY"
+  secret-value = var.firebase-api-key
+}
+
+module "Firebase-Auth-Domain" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_FIREBASE_AUTH_DOMAIN"
+  secret-value = var.firebase-auth-domain
+}
+
+module "Firebase-Project-Id" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_FIREBASE_PROJECT_ID"
+  secret-value = var.firebase-project-id
+}
+
+module "Firebase-Storage-Bucket" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_FIREBASE_STORAGE_BUCKET"
+  secret-value = var.firebase-storage-bucket
+}
+
+module "Firebase-Messaging-Sender-Id" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_FIREBASE_MESSAGING_SENDER_ID"
+  secret-value = var.firebase-messaging-sender-id
+}
+
+module "Firebase-app-id" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_FIREBASE_APP_ID"
+  secret-value = var.firebase-app-id
 }
