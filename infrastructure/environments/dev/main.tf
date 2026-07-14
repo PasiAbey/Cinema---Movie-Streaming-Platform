@@ -188,6 +188,12 @@ module "catalog-service" {
   memory-size = "512"
   container-port = 5001
   aws-region = "eu-north-1"
+  container-secrets = [
+    {
+      name      = "TMDB_API_KEY"
+      valueFrom = module.Tmdb-api-key.secret-arn
+    }
+  ]
 
   ecs-service-name = "Cinema-catalog-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id
@@ -254,6 +260,10 @@ module "frontend-service" {
   ]
 
   container-secrets = [
+    {
+      name = "VITE_API_URL"
+      valueFrom = module.alb.alb-dns-name
+    },
     {
       name      = "VITE_FIREBASE_API_KEY"
       valueFrom = module.Firebase-API-Key.secret-arn
@@ -386,4 +396,16 @@ module "Firebase-app-id" {
   source = "../../modules/secret_manager"
   secret-name = "VITE_FIREBASE_APP_ID"
   secret-value = var.firebase-app-id
+}
+
+
+
+
+
+
+# Create secrets for Catalog Service
+module "Tmdb-api-key" {
+  source = "../../modules/secret_manager"
+  secret-name = "TMDB_API_KEY"
+  secret-value = var.tmdb-api-key
 }

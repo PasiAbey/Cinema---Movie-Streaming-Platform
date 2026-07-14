@@ -108,7 +108,7 @@ jobs:
 
 
 
-# --------------      User-Service Section        --------------
+# --------------      User-Service Section       --------------
 
       - name: Download current user-service task definition
         run: |

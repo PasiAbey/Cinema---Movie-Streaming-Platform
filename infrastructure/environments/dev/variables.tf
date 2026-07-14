@@ -34,3 +34,18 @@ variable "firebase-app-id" {
   type        = string
   sensitive = true
 }
+
+
+
+
+
+
+
+
+
+# Catalog Service Variables
+variable "tmdb-api-key" {
+  description = "TMDB API Key"
+  type        = string
+  sensitive = true
+}
