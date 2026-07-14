@@ -125,7 +125,7 @@ app.post('/progress', authenticate, async (req, res) => {
         await userRef.set({
             watchProgress: {
                 [key]: {
-                    ...progressData,
+                    progress: progressData,
                     last_updated: Date.now()
                 }
             }
