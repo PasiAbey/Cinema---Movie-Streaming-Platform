@@ -13,22 +13,30 @@ app.use(express.json());
 if (!admin.apps.length) {
     try {
         // Use service account if file exists, otherwise try fallback
-        const fs = require('fs');
-        const keyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-        
-        if (keyPath && fs.existsSync(keyPath)) {
+        const firebaseKey = process.env.FIREBASE_SERVICE_ACCOUNT;
+
+        if (firebaseKey) {
+
             admin.initializeApp({
-                credential: admin.credential.cert(keyPath),
+                credential: admin.credential.cert(
+                    JSON.parse(firebaseKey)
+                ),
                 projectId: process.env.VITE_FIREBASE_PROJECT_ID
             });
-            console.log('Firebase Admin initialized with Service Account Key');
+
+            console.log(
+                "Firebase Admin initialized from Secrets Manager"
+            );
+
         } else {
-            console.warn('⚠️ No Service Account Key found. User Service will run in limited mode (ReadOnly might work, but writes will fail).');
-            // Try to init with just project ID (sometimes works in certain cloud envs)
-            admin.initializeApp({
-                projectId: process.env.VITE_FIREBASE_PROJECT_ID
-            });
+
+            console.warn(
+                "No Firebase service account secret found"
+            );
         }
+        
+
+
     } catch (error) {
         console.error('Firebase Admin Init Error:', error.message);
     }

@@ -223,6 +223,16 @@ module "user-service" {
   memory-size = "512"
   container-port = 5002
   aws-region = "eu-north-1"
+  container-secrets = [
+    {
+      name      = "GOOGLE_APPLICATION_CREDENTIALS"
+      valueFrom = module.service-account-key.secret-arn
+    },
+    {
+      name      = "VITE_FIREBASE_PROJECT_ID"
+      valueFrom = module.Firebase-Project-Id.secret-arn
+    }
+  ]
 
   ecs-service-name = "Cinema-user-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id
@@ -412,4 +422,12 @@ module "Tmdb-api-key" {
   source = "../../modules/secret_manager"
   secret-name = "TMDB_API_KEY"
   secret-value = var.tmdb-api-key
+}
+
+
+
+module "service-account-key" {
+  source = "../../modules/secret_manager"
+  secret-name = "GOOGLE_APPLICATION_CREDENTIALS"
+  secret-value = file("${path.module}/../../../serviceAccountKey/serviceAccountKey.json")
 }
