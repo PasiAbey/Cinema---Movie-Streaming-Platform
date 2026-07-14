@@ -262,7 +262,7 @@ module "frontend-service" {
   container-secrets = [
     {
       name = "VITE_API_URL"
-      valueFrom = module.alb.alb-dns-name
+      valueFrom = module.Vite-api-url.secret-arn
     },
     {
       name      = "VITE_FIREBASE_API_KEY"
@@ -359,7 +359,11 @@ module "alb-listner-rule" {
 
 
 
-
+module "Vite-api-url" {
+  source = "../../modules/secret_manager"
+  secret-name = "VITE_API_URL"
+  secret-value = module.alb.alb-dns-name
+}
 
 
 module "Firebase-API-Key" {
