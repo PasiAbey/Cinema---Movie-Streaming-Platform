@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL || "";
-const BASE_URL = `http://${apiUrl}/api/tmdb`;
+const BASE_URL = `${apiUrl}/api/tmdb`;
 const IMAGE_BASE = "https://image.tmdb.org/t/p";
 
 function tmdbFetch(path) {

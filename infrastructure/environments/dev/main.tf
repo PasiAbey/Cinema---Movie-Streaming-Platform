@@ -372,7 +372,7 @@ module "alb-listner-rule" {
 module "Vite-api-url" {
   source = "../../modules/secret_manager"
   secret-name = "VITE_API_URL"
-  secret-value = module.alb.alb-dns-name
+  secret-value = "http://${module.alb.alb-dns-name}"
 }
 
 

@@ -60,7 +60,7 @@ export function useWatchProgress(currentUser, user) {
 
       try {
         const token = await user.getIdToken();
-        await fetch(`http://${API_URL}/api/user/progress`, {
+        await fetch(`${API_URL}/api/user/progress`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
