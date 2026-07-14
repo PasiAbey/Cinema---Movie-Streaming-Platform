@@ -122,7 +122,7 @@ module "sg-for-gateway" {
   source = "../../modules/sec_grp"
   sg-name = "Cinema-gateway-sg"
   vpc-id = module.vpc.vpc-id
-  security-group-id = module.sg-for-frontend.security-group-id
+  security-group-id = module.alb-sg.alb_security-group-id
   container-port = 80
 }
 
