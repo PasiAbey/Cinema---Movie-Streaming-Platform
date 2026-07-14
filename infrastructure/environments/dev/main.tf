@@ -279,7 +279,7 @@ module "frontend-service" {
       valueFrom = module.Firebase-app-id.secret-arn
     }
   ]
-  aws-region = "us-east-1"
+  aws-region = "eu-north-1"
 
   ecs-service-name = "Cinema-frontend-service"
   ecs-cluster-id = module.ecs-cluster.cluster-id
