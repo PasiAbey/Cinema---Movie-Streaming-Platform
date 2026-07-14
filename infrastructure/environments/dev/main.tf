@@ -225,7 +225,7 @@ module "user-service" {
   aws-region = "eu-north-1"
   container-secrets = [
     {
-      name      = "GOOGLE_APPLICATION_CREDENTIALS"
+      name      = "FIREBASE_SERVICE_ACCOUNT"
       valueFrom = module.service-account-key.secret-arn
     },
     {
@@ -428,6 +428,6 @@ module "Tmdb-api-key" {
 
 module "service-account-key" {
   source = "../../modules/secret_manager"
-  secret-name = "GOOGLE_APPLICATION_CREDENTIALS"
+  secret-name = "FIREBASE_SERVICE_ACCOUNT"
   secret-value = file("${path.module}/../../../serviceAccountKey/serviceAccountKey.json")
 }

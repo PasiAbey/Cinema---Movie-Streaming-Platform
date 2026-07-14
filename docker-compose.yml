@@ -15,7 +15,6 @@ services:
     networks:
       - movie-network
 
-
   user-service:
     build: ./services/user-service
     env_file: .env
