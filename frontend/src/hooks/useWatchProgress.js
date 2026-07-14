@@ -11,7 +11,7 @@ const VIDFAST_ORIGINS = [
 ];
 
 const SAVE_INTERVAL_MS = 15_000;
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 /**
  * Listens to Vidfast MEDIA_DATA postMessage events and saves progress
@@ -60,7 +60,7 @@ export function useWatchProgress(currentUser, user) {
 
       try {
         const token = await user.getIdToken();
-        await fetch(`${API_URL}/api/user/progress`, {
+        await fetch(`http://${API_URL}/api/user/progress`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
