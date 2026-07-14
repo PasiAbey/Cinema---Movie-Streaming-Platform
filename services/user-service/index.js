@@ -74,6 +74,10 @@ app.get('/favorites', authenticate, async (req, res) => {
 });
 
 app.post('/favorites', authenticate, async (req, res) => {
+    console.log("========== FAVORITE REQUEST ==========");
+    console.log("User:", req.user.uid);
+    console.log("Body:", req.body);
+    
     const { mediaItem } = req.body;
     if (!mediaItem || !mediaItem.id) return res.status(400).json({ error: 'Invalid media item' });
 
