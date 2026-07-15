@@ -159,7 +159,6 @@ jobs:
 
 
 
-
 # --------------      Gateway Section        --------------
 
       - name: Download current gateway task definition
@@ -207,10 +206,6 @@ jobs:
             --service Cinema-gateway-service \
             --task-definition $TASK_DEF_ARN \
             --force-new-deployment
-
-
-
-
 
 
 
@@ -267,34 +262,14 @@ jobs:
       
 
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
 
 
-
-
-
-
-
-
-
-
-
-#      - name: Wait for service stability
-#        run: |
-#          aws ecs wait services-stable \
-#            --cluster Cinema-Cluster \
-#            --services \
-#              Cinema-catalog-service \
-#              Cinema-user-service \
-#              Cinema-frontend-service \
-#              Cinema-gateway-service
+      - name: Wait for service stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster Cinema-Cluster \
+            --services \
+              Cinema-catalog-service \
+              Cinema-user-service \
+              Cinema-frontend-service \
+              Cinema-gateway-service
