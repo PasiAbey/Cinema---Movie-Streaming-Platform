@@ -9,6 +9,7 @@
 A production-ready streaming platform explicitly developed to demonstrate modern **DevOps, Cloud Engineering, and Infrastructure as Code (IaC)** principles. The project is a highly scalable, containerized microservices ecosystem deployed on AWS.
 
 ---
+<br>
 
 ##  Cloud Architecture & Infrastructure (AWS)
 
@@ -21,6 +22,7 @@ The entire cloud infrastructure is provisioned using **Terraform** (`/infrastruc
 - **Security & Secrets**: AWS Secrets Manager handles sensitive environment variables and credentials securely. Security Groups manage strict inbound/outbound rules.
 
 ---
+<br>
 
 ##  CI/CD Pipeline (GitHub Actions)
 
@@ -37,6 +39,7 @@ A fully automated continuous integration and continuous deployment pipeline (`.g
    - Waits for service stability before completing the workflow.
 
 ---
+<br>
 
 ##  Microservices Architecture
 
