@@ -21,6 +21,9 @@ The entire cloud infrastructure is provisioned using **Terraform** (`/infrastruc
 - **Container Registry (ECR)**: Securely stores version-tagged Docker images.
 - **Security & Secrets**: AWS Secrets Manager handles sensitive environment variables and credentials securely. Security Groups manage strict inbound/outbound rules.
 
+<img width="500" height="500" alt="Roboto Mono" src="https://github.com/user-attachments/assets/ca859ef8-6206-4ac4-a415-cdb300d32a8a"/>
+
+
 ---
 <br>
 
@@ -48,7 +51,7 @@ A fully automated continuous integration and continuous deployment pipeline (`.g
 - **Catalog Service (Node.js)**: Stateless proxy service that interacts with the TMDB API to serve movie metadata.
 - **User Service (Node.js)**: Stateful microservice responsible for user data (favorites, watch progress). It strictly validates JWTs using the Firebase Admin SDK.
 
----
+
 
 
 
